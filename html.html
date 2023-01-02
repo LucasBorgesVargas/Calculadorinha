@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    
+    </script>
+</head>
+
+    <style type="text/css">
+        body{
+    background-color: rgb(75, 0, 0);
+    box-sizing: border-box;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+}
+main{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(45deg,black, crimson);
+    color: rgb(0, 0, 0);
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+#calculadora{   
+
+
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+    padding: 5px;
+    min-width: 300px;
+    width: 10%;
+
+   
+}
+
+#visor
+{
+    background-color: aliceblue;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    margin: 20px;
+    margin-inline: 5%;
+    overflow: hidden;
+    height: 50px;
+}
+
+#resultado
+{
+    position: relative;
+    background-color: aliceblue;
+    box-sizing: border-box;
+    text-align: right;
+    margin: 3px;
+    font-size: 25px;
+    white-space: nowrap;
+    overflow: scroll;
+    overflow-y: hidden;
+    height: min-content;
+}
+
+.teclado
+{
+    margin-left: 1px;
+    margin-right: 1px;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+button:hover
+{
+    background-color: rgb(59, 59, 59);
+    color: aliceblue;
+    box-shadow: 1px 1px 90px  rgb(201, 201, 201);
+}
+
+
+button{
+    background-color: rgb(255, 255, 255);
+    font-size: 35px;
+    margin: 5px;
+    border-radius: 3px;
+    border: none;
+    min-height: 60px;
+    min-width: 60px;
+}
+
+#enter{
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 4;
+    grid-row-end: 6;
+}
+#zero
+{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 5;
+}
+    </style>
+
+<body>
+    <main>
+        <div id="calculadora">
+
+            <div id="visor">
+                <p id="resultado">
+                </p>
+            </div>
+
+            <div class="teclado">
+                <button type="button" class="tecla" onclick="ce()">C</button>
+                <button type="button" class="tecla" onclick="back()">></button>
+                <button type="button" class="tecla" onclick="adicionar('/')">/</button>
+                <button type="button" class="tecla" onclick="adicionar('*')">X</button>
+                <button type="button" class="tecla" onclick="adicionar('7')">7</button>
+                <button type="button" class="tecla" onclick="adicionar('8')">8</button>
+                <button type="button" class="tecla" onclick="adicionar('9')">9</button>
+                <button type="button" class="tecla" onclick="adicionar('-')">-</button>
+                <button type="button" class="tecla" onclick="adicionar('4')">4</button>
+                <button type="button" class="tecla" onclick="adicionar('5')">5</button>
+                <button type="button" class="tecla" onclick="adicionar('6')">6</button>
+                <button type="button" class="tecla" onclick="adicionar('+')">+</button>
+                <button type="button" class="tecla" onclick="adicionar('1')">1</button>
+                <button type="button" class="tecla" onclick="adicionar('2')">2</button>
+                <button type="button" class="tecla" onclick="adicionar('3')">3</button>
+
+                <button type="button" id="enter" onclick="calcular()">=</button>
+
+                <button type="button" id="zero" onclick="adicionar('0')">0</button>
+                <button type="button" onclick="adicionar('.')">.</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        visor = {}
+        visor.resultado = ""
+        visor.aux = false
+        visor.historico = 0
+        visor.operadores = ['/', '+', '-', '*']
+
+        function check_reset_visor() {
+            if (visor.aux == true) {
+                document.getElementById('resultado').innerHTML = '';
+                visor.resultado = '';
+                visor.aux = check(visor.aux);
+
+            }
+        }
+        function check(buliano) {
+            return !buliano;
+        }
+
+        function ce() {
+            document.getElementById('resultado').innerHTML = ''
+            visor.resultado = ''
+        }
+
+        function number_to_string(operador) {
+            visor.historico = visor.historico + operador;
+        }
+
+        function change_tela(num) {
+            var aux = document.getElementById('resultado').innerText
+            document.getElementById('resultado').innerText = aux + num
+
+        }
+
+        function adicionar(num) {
+            check_reset_visor();
+
+            change_tela(num);
+
+            visor.resultado = visor.resultado + num;
+
+            if (!(typeof visor.historico === "string") && visor.historico !== 0) {
+                for (let cont = 0; cont < visor.operadores.length; cont++) {
+                    if (visor.resultado.substring(0, 1) == visor.operadores[cont]) {
+                        number_to_string(visor.operadores[cont]);
+                        visor.resultado = visor.resultado.substring(1, visor.resultado.length);
+                    }
+                }
+            }else
+            {
+                visor.resultado = visor.historico + visor.resultado;
+                visor.historico = 0   
+            }
+        }
+
+        function calcular() {
+
+            visor.aux = check(visor.aux);
+
+            if (visor.resultado.length >= 2) {
+                document.getElementById('resultado').innerHTML = eval(visor.resultado);
+                visor.historico = eval(visor.resultado);
+                visor.resultado = '';
+            }
+            else {
+                document.getElementById('resultado').innerHTML = "";
+
+            }
+        }
+
+        function back() {
+            var resultado = document.getElementById('resultado').innerHTML;
+            document.getElementById('resultado').innerHTML = resultado.substring(0, resultado.length - 1);
+            visor.resultado = visor.resultado.substring(0, visor.resultado.length - 1);
+        }
+
+    </script>
+</body>
+
+</html>
